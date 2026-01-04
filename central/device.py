@@ -49,7 +49,9 @@ class Device:
             print(f"Error with the device on the {self.device_body_location.lower()} ({self.uuid})")
             print(e)
     
-    async def calibrate(self) -> None:
+    # standing_time je za acceleration and gyro data
+    # walking_time je za magnetometar posto treba hodati u krug
+    async def calibrate(self, standing_time: float, walking_time: float) -> None:
         if not self.is_connected:
             print(f"Unable to calibrate device on {self.body_location}.")
             return
@@ -61,8 +63,8 @@ class Device:
         
         try: 
             await self.client.start_notify(self.CUSTOM_IMU_UUID, callback)
-            print(f'Calibrating {self.body_location} device... (wait 10s)')
-            await asyncio.sleep(10.0)
+            print(f'STAND STILL! Calibrating acceleration, and gyro data {self.body_location} device... (wait {standing_time}s)')
+            await asyncio.sleep(standing_time)
             await self.client.stop_notify(self.CUSTOM_IMU_UUID)
             
             # TODO vidjet je li bolje sam implementirati mean() preko IMUa da se ne koristi numpy bzvz (smanjiti overhead)
@@ -77,7 +79,13 @@ class Device:
             
             self.offset = IMU(0, linear_offset[0], linear_offset[1], linear_offset[2], gyro_offset[0], gyro_offset[1], gyro_offset[2], 0, 0, 0)
             
-            print(f'Calibration of {self.body_location} done.')
+            # print(f'Walk in a circle for {walking_time}s in one direction.')
+            
+            # print("Pause for 5s.")
+            
+            # print(f'Walk in a circle for {walking_time}s in the other direction.')
+            
+            # print(f'Calibration of {self.body_location} done.')
                 
         except Exception as e:
             print(e)
@@ -94,7 +102,7 @@ class Device:
             modified_timestamp = timestamp - self.initial_timestamp # kasni za jedan?
             
             measured_data = IMU(modified_timestamp, ax, ay, az, gx, gy, gz, mx, my, mz) # remove IMU type
-            #measured_data.remove_offset(self.offset) TODO
+            measured_data.remove_offset(self.offset) 
             self.data.append(measured_data)
         
         try: 
@@ -120,7 +128,7 @@ class Device:
             print(f'Saving {self.body_location} data to file.')
 
             with open(self.file_path, 'w') as file:
-                file.write("Timestamp, LinearX, LinearY, LinearZ, AngularX, AngularY, AngularZ, MagnetX, MagnetY, MagnetZ")
+                file.write("Timestamp, LinearX, LinearY, LinearZ, AngularX, AngularY, AngularZ, MagnetX, MagnetY, MagnetZ\n")
                 for entry in self.data:
                     file.write(str(entry))
                 file.flush()
