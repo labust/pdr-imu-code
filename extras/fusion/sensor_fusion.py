@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from math import sin, cos, atan2
 
 
-data = np.loadtxt("right_leg_imu_data.csv", delimiter=",", skiprows=1)
+data = np.loadtxt("./extras/fusion/right_leg_imu_data.csv", delimiter=",", skiprows=1)
 
 ax, ay, az = data[:, 1], data[:, 2], data[:, 3]
 gx, gy, gz = data[:, 4], data[:, 5], data[:, 6]
@@ -64,7 +64,7 @@ yaw = np.degrees(np.array(yaw))
 fusion = np.transpose(np.vstack([roll, pitch, yaw]))
 
 header = 'roll, pitch, yaw'
-np.savetxt('fusion_right_leg_bedra_hodanje_krug.csv', fusion, delimiter=',', header=header, comments='')
+np.savetxt('./extras/fusion/fusion_right_leg_bedra_hodanje_krug.csv', fusion, delimiter=',', header=header, comments='')
 
 # === GPT GENERATED ===
 frames = len(roll)
