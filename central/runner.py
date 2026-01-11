@@ -27,7 +27,7 @@ class Runner:
         print("CALIBRATING...")
         await asyncio.gather(
             *(
-                device.calibrate() 
+                device.calibrate(10.0, 15.0) 
                 for device in self.devices
             )
         )
@@ -59,11 +59,11 @@ async def main():
     left_leg_device = Device(directory_name, "left_leg", "08151AAC-7425-AF47-653F-5E4D46C327F0", lock)
     chest_device = Device(directory_name, "chest", "F28584E7-DEC2-9687-B6AE-DCFB28A5157D", lock)
     
-    runner.addAll([chest_device])
+    runner.addAll([right_leg_device])
     
     await runner.connect_devices()
     await runner.calibrate_devices()
-    await runner.collect_data(duration=120)
+    await runner.collect_data(duration=60)
     await runner.write_to_file()
 
 asyncio.run(main())
