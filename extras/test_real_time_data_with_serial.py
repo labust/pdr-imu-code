@@ -9,8 +9,6 @@ from math import atan2, radians, pi, sqrt
 import numpy as np
 
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 t0 = theta = phi = 0.0
@@ -23,7 +21,6 @@ cube_vertices = np.array([[-0.3, -0.8, -0.1],
                           [ 0.3, -0.8,  0.1],
                           [ 0.3,  0.8,  0.1],
                           [-0.3,  0.8,  0.1]])
-
 faces = [[0,1,2,3],[4,5,6,7],[0,1,5,4],
          [2,3,7,6],[0,3,7,4],[1,2,6,5]]
 
@@ -33,19 +30,16 @@ def wrap(a):
 def rotation_matrix(r, p):
     cr, sr = np.cos(r), np.sin(r)
     cp, sp = np.cos(p), np.sin(p)
-
     Rx = np.array([
         [1,  0,   0],
         [0, cr, -sr],
         [0, sr,  cr]
     ])
-
     Ry = np.array([
         [ cp, 0, sp],
         [  0, 1,  0],
         [-sp, 0, cp]
     ])
-
     return Ry @ Rx
 
 def complementary_filter(raw_data: str):
@@ -100,6 +94,8 @@ def read_serial(port, baudrate):
                     cube_poly.set_verts(verts)
 
                     fig.canvas.draw_idle()
+                    
+                    print("Roll:", theta,"Pitch:", phi)
                     plt.pause(0.001)
                     
         except serial.SerialException as e:

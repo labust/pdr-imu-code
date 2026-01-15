@@ -114,6 +114,10 @@ class Device:
             print(f'Data collection from {self.body_location} done.')
         except Exception as e:
             print(e)
+    
+    async def collect_yaw_pitch(self):
+        # TODO
+        return
 
 
     async def save_to_file(self):
